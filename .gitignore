@@ -1,2 +1,4 @@
 *.pyc
 LeapSDK/*
+output.txt
+env/
