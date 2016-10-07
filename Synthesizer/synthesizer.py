@@ -1,5 +1,8 @@
 import pyaudio
 import numpy as np
+from matplotlib.pyplot import figure, show
+import csv
+import sys
 
 # Create instances of this class using 'with Synthesizer() as synthesizer'. 
 # That way the __exit__ method should be automatically invoked to handle closing the audio stream
@@ -31,9 +34,11 @@ class Synthesizer:
 	
 	def updateSignal(self):
 		#TODO: implement time tracking
-		internal = 2*np.pi*np.arange(self.fs*self.signalDuration)*self.frequency/self.fs + self.phase
+		self.t = np.arange(self.fs*self.signalDuration)
+		internal = 2*np.pi*self.t*self.frequency/self.fs + self.phase
 		self.signal = (np.sin(internal)).astype(np.float32)
 		self.phase = internal[-1] % (2*np.pi)
+		self.time += self.signalDuration
 		
 		
 	# Updates the frequency and also modifies phase so the signal's vertical positioning lines up
@@ -47,22 +52,39 @@ class Synthesizer:
 		# Write signal to the stream
 		self.stream.write(self.amplitude*self.signal)
 		
+	def runDebug(self):
+		fig = figure(1)
+		ax1 = fig.add_subplot(211)
+		ax1.plot(self.t, self.signal)
+		ax1.grid(True)
+		show()
+		i = raw_input("Press Enter to continue...")
+		
 	def run(self):
 		# poll for new frequency, call variable newFreq
 		#---------------insert code ----------------------
 		newFreq = self.frequency + 1
 
-		if newFreq != self.frequency:
-			self.updateFreq(newFreq)
-			
-		self.updateSignal()
-		self.playSignal()
+		with open('output.txt', 'rb') as f:
+			reader = csv.reader(f)
+			for row in reader:
+				print row
+				sys.stdout.flush()
+				#Translate y values from 0-600 to be in 3rd octave
+				newFreq = 261.63 + 232.25*float(row[1])/600 
+				
+				if newFreq != self.frequency:
+					self.updateFreq(newFreq)
+					
+				self.updateSignal()
+				self.playSignal()
+				#self.runDebug()
 		
 	def closeStream(self):
 		self.stream.stop_stream()
 		self.stream.close()	
 	
 if __name__ == "__main__":
-	with Synthesizer(440, 1.0, 2) as synthesizer:
+	with Synthesizer(440, 1.0, .25) as synthesizer:
 		while True:
 			synthesizer.run()
