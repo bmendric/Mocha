@@ -18,12 +18,9 @@ class LeapFrames:
 	def getPos(self):
 		frame = self.controller.frame()
 		for hand in frame.hands:
-			print "hand"
 			if hand.is_left:
-				print "left"
 				pass
 			else:
-				print "right"
 				tmp = list([])
 				for i in range(3):
 					tmp.append(hand.palm_position[i])
