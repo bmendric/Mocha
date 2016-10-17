@@ -104,6 +104,7 @@ class Synthesizer:
 		self.updateSignal(frame_count)
 		# self.playSignal()
 		#self.runDebug()
+		# dumb
 		return (self.amplitude*self.signal, pyaudio.paContinue)
 
 	def play(self, pos):
