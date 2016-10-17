@@ -54,10 +54,10 @@ class MainController:
 	# Function through which all necessary functions are looped (on the main thread)
 	def loop(self):
 		pos = self.workers['frame'].getPos()
-		self.workers['synth'].play(pos)
-
 		normalized = self.normalize(pos)
+
 		if pos:
+			self.workers['synth'].play(normalized)
 			self.ball.draw(normalized)
 
 		self.tk.update_idletasks()
@@ -78,7 +78,7 @@ class MainController:
 			elif yCoord > 1:
 				yCoord = 1
 
-			tmp = [xCoord * 1000, yCoord * 500]
+			tmp = [xCoord, yCoord]
 			return tmp
 
 
@@ -92,7 +92,7 @@ class Ball:
 	def draw(self, pos):
 		self.canvas.delete(self.id)
 		self.id = self.canvas.create_oval(10, 10, 30, 30, fill=self.color)
-		self.canvas.move(self.id, pos[0], pos[1])
+		self.canvas.move(self.id, pos[0]*1000, pos[1]*500)
 
 def main():
 	controller = MainController()

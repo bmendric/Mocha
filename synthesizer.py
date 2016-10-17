@@ -64,7 +64,6 @@ class Synthesizer(threading.Thread):
 		return waves
 
 	def _getClosestNote(self, pos):
-		print pos
 		if pos < 0.083:
 			return 'A'
 		if pos < 0.166:
@@ -95,7 +94,7 @@ class Synthesizer(threading.Thread):
 
 	def play(self, pos):
 		closest = self._getClosestNote(pos[0])
-		self.playSignal(self.noteWave[closest])
+		self.playSignal(self.noteWaves[closest])
 
 	def closeStream(self):
 		self.stream.stop_stream()
