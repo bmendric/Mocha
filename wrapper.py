@@ -1,11 +1,4 @@
 import sys
-#src_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
-#arch_dir = 'lib/x64' if sys.maxsize > 2**32 else 'lib/x86'
-#sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
-sys.path.append("/usr/lib/Leap")
-sys.path.append("LeapSDK/lib/x64")
-sys.path.append("LeapSDK/lib")
-
 import Leap
 
 class LeapFrames:
@@ -13,7 +6,7 @@ class LeapFrames:
 		self.controller = Leap.Controller()
 
 	def getFrame(self):
-		return controller.frame()
+		return self.controller.frame()
 
 	def getPos(self):
 		frame = self.controller.frame()
@@ -42,7 +35,7 @@ def main():
 	#frame = controller.frame()
 	#for hand in frame.hands:
 	#	print hand.palm_position
-	print test.getPos()
+	print test.getFrame()
 
 
 # main call handling

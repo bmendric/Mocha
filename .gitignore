@@ -1,4 +1,5 @@
 *.pyc
+*.swp
 LeapSDK/*
 output.txt
 env/
