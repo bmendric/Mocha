@@ -11,7 +11,7 @@ class LeapFrames:
 	def getPos(self):
 		frame = self.controller.frame()
 		for hand in frame.hands:
-			if hand.is_left:
+			if not hand.is_left:
 				pass
 			else:
 				tmp = list([])

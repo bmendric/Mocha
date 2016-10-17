@@ -1,4 +1,4 @@
-import threading, Queue
+import threading, Queue, Tkinter
 
 from wrapper import LeapFrames
 from synthesizer import Synthesizer
@@ -13,21 +13,93 @@ class LeapThread(threading.Thread):
 		pass
 
 	def getPos(self):
-		return [self.getName(), self.frameGen.getPos()]
+		return self.frameGen.getPos()
 
+	def getFrame(self):
+		return self.frameGen.getFrame()
+
+class MainController:
+	xRange = [-300, 300]
+	yRange = [0, 600]
+	
+	def __init__(self):
+		# Initialize variables
+		self.workers = {}
+		self.queue = Queue.Queue()
+
+		# Initialize threads
+		# thread for LeapMotion frames
+		self.workers['frame'] = LeapThread(self.queue)
+
+		# thread for synthesizer
+		self.workers['synth'] = Synthesizer(440, 1.0, .25)
+
+		self.start()
+
+		# Starting the GUI
+		self.tk = Tkinter.Tk()
+		self.tk.title = "Mocha"
+		self.tk.resizable(0, 0)
+
+		self.canvas = Tkinter.Canvas(self.tk, width=1000, height=500, bd=0, highlightthickness=0)
+		self.canvas.pack()
+
+		self.ball = Ball(self.canvas, "red")
+	
+	# Function to start all of the workers
+	def start(self):
+		for key, obj in self.workers.iteritems():
+			obj.start()
+
+	# Function through which all necessary functions are looped (on the main thread)
+	def loop(self):
+		pos = self.workers['frame'].getPos()
+		self.workers['synth'].play(pos)
+
+		normalized = self.normalize(pos)
+		if pos:
+			self.ball.draw(normalized)
+
+		self.tk.update_idletasks()
+		self.tk.update()
+
+	def normalize(self, pos):
+		if pos:
+			xCoord = (pos[0] + 240) / 480
+			yCoord = 1 - (pos[1] / 500)
+			
+			if xCoord < 0:
+				xCoord = 0
+			elif xCoord > 1:
+				xCoord = 1
+
+			if yCoord < 0:
+				yCoord = 0
+			elif yCoord > 1:
+				yCoord = 1
+
+			tmp = [xCoord * 1000, yCoord * 500]
+			return tmp
+
+
+class Ball:
+	def __init__(self, canvas, color):
+		self.color = color
+		self.canvas = canvas
+		self.id = self.canvas.create_oval(10, 10, 30, 30, fill=self.color)
+		self.canvas.move(self.id, 540, 240)
+
+	def draw(self, pos):
+		self.canvas.delete(self.id)
+		self.id = self.canvas.create_oval(10, 10, 30, 30, fill=self.color)
+		self.canvas.move(self.id, pos[0], pos[1])
 
 def main():
-	workers = {}
-	queue = Queue.Queue()
-	workers['frame'] = LeapThread(queue)
-	workers['frame'].start()
-	
-	workers['synth'] = Synthesizer(440, 1.0, .25, workers['frame'])
-	workers['synth'].start()
+	controller = MainController()
 
 	try:
 		while True:
-			workers['synth'].play()
+			controller.loop()
 	except KeyboardInterrupt:
 		pass
 

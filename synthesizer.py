@@ -1,16 +1,12 @@
-import pyaudio
+import pyaudio, csv, sys, threading
 import numpy as np
-import csv
-import sys
-import threading
-from wrapper import LeapFrames
 
 # Create instances of this class using 'with Synthesizer() as synthesizer'. 
 # That way the __exit__ method should be automatically invoked to handle closing the audio stream
 class Synthesizer(threading.Thread):
 	'Contains methods to generate sin waves, update signal properties, and handle play back'
 	
-	def __init__(self, frequency, amplitude, signalDuration, leapThread):
+	def __init__(self, frequency, amplitude, signalDuration):
 		threading.Thread.__init__(self)
 
 		# Set up signal properties
@@ -21,8 +17,6 @@ class Synthesizer(threading.Thread):
 		self.time = 0
 		self.fs = 44100
 		self.signal = None
-
-		self.leapFrame = leapThread
 
 		# Create pyaudio stream
 		p = pyaudio.PyAudio()
@@ -65,14 +59,13 @@ class Synthesizer(threading.Thread):
 #		show()
 #		i = raw_input("Press Enter to continue...")
 		
-	def play(self):
+	def play(self, row):
 		# poll for new frequency, call variable newFreq
 		#---------------insert code ----------------------
 
 		#with open('output.txt', 'rb') as f:
 		#	reader = csv.reader(f)
 		#	for row in reader:
-		row = self.leapFrame.getPos()[1]
 		#print row
 		sys.stdout.flush()
 
