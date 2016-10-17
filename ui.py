@@ -1,6 +1,7 @@
 from Tkinter import *
 from PIL import Image, ImageTk
-#from mouseControl import LeapMotionMouse
+from wrapper import LeapFrames
+import pyautogui
 
 
 class Application(Frame):
@@ -28,11 +29,12 @@ class Application(Frame):
         px = (self.xval-175)/2
         py = (self.yval-75)/2
         self.mochaButton.grid(row=0,column=0, padx = px, pady = py)
-        self.mochaButton["command"] = self.synth
+        self.mochaButton["command"] = self.canvas
 
-    def synth(self):
+    def canvas(self):
         self.mochaButton.grid_forget()
         self.displaykeys()
+        self.displayCircle()
 
     def displaykeys(self):
         """ display areas for keys """
@@ -46,6 +48,16 @@ class Application(Frame):
             box = [sx,sy,sx+xinc,sy+yinc]
             self.space.create_rectangle(box,outline="black",fill="white",width=2)
             self.space.pack()
+
+    def displayCircle(self):
+        pos = pyautogui.position()
+        x1 = pos[0]
+        y1 = pos[1]
+        x2 = x1+50
+        y2 = y1+50
+        self.space.create_oval(x1,y1,x2,y2,fill="green")
+        self.pack()
+        
 
 	def LeapIntoAction(self):
 		""" run leap motion synthesizer """
