@@ -4,13 +4,16 @@ import numpy as np
 import csv
 import sys
 import random
+import threading
 
 # Create instances of this class using 'with Synthesizer() as synthesizer'.
 # That way the __exit__ method should be automatically invoked to handle closing the audio stream
-class Synthesizer:
+class Synthesizer(threading.Thread):
 	'Contains methods to generate sin waves, update signal properties, and handle play back'
 
 	def __init__(self, frequency, amplitude, signalDuration):
+		threading.Thread.__init__(self)
+
 		# Set up signal properties
 		self.frequency = frequency
 		self.amplitude = amplitude
@@ -34,6 +37,9 @@ class Synthesizer:
 	def __exit__(self, exc_type, exc_value, traceback):
 		self.closeStream()
 
+	def run(self):
+		pass
+
 	def _getNoteFreqs(self):
 		return {
 			'A': 110.00,
@@ -51,42 +57,40 @@ class Synthesizer:
 		}
 
 	def _getNoteWaves(self, noteFreqs):
-		print "Creating note waves..."
 
 		waves = {}
 		for note, freq in noteFreqs.iteritems():
-			signalDuration = (1./freq) * 5
+			signalDuration = (1./freq)
 			time = np.arange(self.fs * signalDuration)
 			internal = 2 * np.pi * time * freq / self.fs
 			signal = (np.sin(internal)).astype(np.float32)
 			waves[note] = signal
 
-		print "Done creating note waves..."
 		return waves
 
 	def _getClosestNote(self, pos):
 		print pos
-		if pos < 60:
+		if pos < 0.083:
 			return 'A'
-		if pos < 120:
+		if pos < 0.166:
 			return 'Bb'
-		if pos < 180:
+		if pos < 0.25:
 			return 'B'
-		if pos < 240:
+		if pos < 0.33:
 			return 'C'
-		if pos < 300:
+		if pos < 0.4167:
 			return 'Db'
-		if pos < 360:
+		if pos < 0.500:
 			return 'D'
-		if pos < 420:
+		if pos < 0.583:
 			return 'Eb'
-		if pos < 480:
+		if pos < 0.666:
 			return 'E'
-		if pos < 540:
+		if pos < 0.750:
 			return 'F'
-		if pos < 600:
+		if pos < 0.833:
 			return 'Gb'
-		if pos < 660:
+		if pos < 0.9167:
 			return 'G'
 		return 'Ab'
 
@@ -94,21 +98,10 @@ class Synthesizer:
 		# Write signal to the stream
 		self.stream.write(self.amplitude*signal)
 
-	def run(self):
-		with open('output.txt', 'rb') as f:
-			reader = csv.reader(f)
-			for row in reader:
-				sys.stdout.flush()
-				print row[1]
-				closest = self._getClosestNote(float(row[1]))
-				print closest
-				self.playSignal(self.noteWaves[closest])
+	def play(self, pos):
+		closest = self._getClosestNote(pos[0])
+		self.playSignal(self.noteWave[closest])
 
 	def closeStream(self):
 		self.stream.stop_stream()
 		self.stream.close()
-
-if __name__ == "__main__":
-	with Synthesizer(440, 1.0, .25) as synthesizer:
-		while True:
-			synthesizer.run()
