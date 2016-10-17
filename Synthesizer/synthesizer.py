@@ -94,9 +94,9 @@ class Synthesizer:
 		#print row
 		# sys.stdout.flush()
 
-		if pos:
+		if self.pos:
 		#Translate y values from 0-600 to be in 3rd octave
-			newFreq = self.baseFreq + self.diffBaseMax*float(pos[1])/600
+			newFreq = self.baseFreq + self.diffBaseMax*float(self.pos[1])/600
 
 			if newFreq != self.frequency:
 				self.updateFreq(newFreq)
