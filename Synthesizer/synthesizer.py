@@ -24,6 +24,7 @@ class Synthesizer:
 		self.diffBaseMax = maxDiffFrequency
 		self.signal = None
 		self.csvReader = None
+		self.pos = None
 
 		# Create pyaudio stream
 		p = pyaudio.PyAudio()
@@ -33,7 +34,7 @@ class Synthesizer:
 					rate=self.fs,
 					output=True,
 					frames_per_buffer=4096,
-					stream_callback=self.noLeapCallback)
+					stream_callback=self.leapCallback)
 
 	def __enter__(self):
 		return self
@@ -90,13 +91,12 @@ class Synthesizer:
 		return (self.amplitude*self.signal, pyaudio.paContinue)
 
 	def leapCallback(self, in_data, frame_count, time_info, status):
-		row = self.leapFrame.getPos()
 		#print row
-		sys.stdout.flush()
+		# sys.stdout.flush()
 
-		if row:
+		if pos:
 		#Translate y values from 0-600 to be in 3rd octave
-			newFreq = self.baseFreq + self.diffBaseMax*float(row[1])/600
+			newFreq = self.baseFreq + self.diffBaseMax*float(pos[1])/600
 
 			if newFreq != self.frequency:
 				self.updateFreq(newFreq)
@@ -105,6 +105,9 @@ class Synthesizer:
 		# self.playSignal()
 		#self.runDebug()
 		return (self.amplitude*self.signal, pyaudio.paContinue)
+
+	def play(self, pos):
+		self.pos = pos
 
 	def run(self):
 		#Hacky solution but change method to leapPlay() for leapmotion control
