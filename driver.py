@@ -42,6 +42,14 @@ class MainController:
 		self.tk.resizable(0, 0)
 
 		self.canvas = Tkinter.Canvas(self.tk, width=1000, height=500, bd=0, highlightthickness=0)
+		
+		lineBoundNorms = [0.083,0.166,0.25,0.33,0.4167,0.500,0.583,0.666,0.750,0.833,0.9167]
+		for i in range(len(lineBoundNorms)):
+			x1 = lineBoundNorms[i]*1000
+			y1 = 0
+			x2 = x1
+			y2 = 500 - 1
+			self.canvas.create_line(x1,y1,x2,y2)
 		self.canvas.pack()
 
 		self.ball = Ball(self.canvas, "red")

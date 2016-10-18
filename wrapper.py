@@ -1,4 +1,5 @@
 import sys
+sys.path.append("C:\Python32\LeapDeveloperKit_2.3.1+31549_win\LeapSDK\lib")
 import Leap
 
 class LeapFrames:
