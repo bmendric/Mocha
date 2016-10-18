@@ -19,8 +19,8 @@ class LeapThread(threading.Thread):
 		return self.frameGen.getFrame()
 
 class MainController:
-	xRange = [-300, 300]
-	yRange = [0, 600]
+	screenX = 1000
+	screenY = 500
 	
 	def __init__(self):
 		# Initialize variables
@@ -34,6 +34,7 @@ class MainController:
 		# thread for synthesizer
 		self.workers['synth'] = Synthesizer(880, 1.0, 230, 880)
 
+		# starting all worker threads
 		self.start()
 
 		# Starting the GUI
@@ -41,7 +42,19 @@ class MainController:
 		self.tk.title = "Mocha"
 		self.tk.resizable(0, 0)
 
-		self.canvas = Tkinter.Canvas(self.tk, width=1000, height=500, bd=0, highlightthickness=0)
+		# setting up a canvas
+		self.canvas = Tkinter.Canvas(self.tk, width=self.screenX, height=self.screenY, bd=0, highlightthickness=0)
+		
+		# drawing lines on the canvas for binning
+		lineBoundNorms = [0.083, 0.166, 0.25, 0.33, 0.4167, 
+			0.500, 0.583, 0.666, 0.750, 0.833, 0.9167]
+
+		for norm in lineBoundNorms:
+			x1 = norm*self.screenX
+			x2 = x1
+			y1, y2 = 0, self.screenY - 1
+			self.canvas.create_line(x1,y1,x2,y2)
+
 		self.canvas.pack()
 
 		self.ball = Ball(self.canvas, "red")
