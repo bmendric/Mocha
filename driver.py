@@ -32,7 +32,7 @@ class MainController:
 		self.workers['frame'] = LeapThread(self.queue)
 
 		# thread for synthesizer
-		self.workers['synth'] = Synthesizer(440, 1.0, .25)
+		self.workers['synth'] = Synthesizer(880, 1.0, 230, 880)
 
 		self.start()
 
@@ -57,7 +57,7 @@ class MainController:
 		normalized = self.normalize(pos)
 
 		if pos:
-			self.workers['synth'].play(normalized)
+			self.workers['synth'].play(pos)
 			self.ball.draw(normalized)
 
 		self.tk.update_idletasks()
