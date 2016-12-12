@@ -262,6 +262,7 @@ function Synth() {
     {
       $("#timer-value").val(0);
       $('#toggle-recording').prop('disabled', false);
+      $("#toggle-synth").prop('disabled', false);
       _this.timerTimeout = null;
       _this.toggleRecording();
     }
@@ -269,17 +270,27 @@ function Synth() {
       $("#timer-value").val(timeRemaining - 1);
       _this.timerTimeout = window.setTimeout(_this.timer, 1000, timeRemaining - 1);
     }
-  }
+  };
 
   this.toggle = function() {
     $("#toggle-synth").toggleClass('active');
-    this.playing ? this.stop() : this.start();
-    this.playing = !this.playing;
+    // this.playing ? this.stop() : this.start();
+    if (this.playing) {
+        if (this.recording)
+        {
+          $('#toggle-recording').trigger('click');
+        }
 
-    if (this.recording)
-    {
-      $('#toggle-recording').trigger('click');
+        this.stop();
+        $('#toggle-distortion').prop('disabled', false);
+        $('#toggle-recording').prop('disabled', true);
     }
+    else {
+        this.start();
+        $('#toggle-distortion').prop('disabled', true);
+        $('#toggle-recording').prop('disabled', false);
+    }
+    this.playing = !this.playing;
   };
 
   this.toggleRecordingCallback = function() {
@@ -291,6 +302,7 @@ function Synth() {
       if (!this.recording && document.getElementById("timer-on").checked)
       {
         $('#toggle-recording').prop('disabled', true);
+        $("#toggle-synth").prop('disabled', true);
         this.timer(parseInt($("#timer-value").val(), 10));
       }
       else {
@@ -303,7 +315,7 @@ function Synth() {
   this.toggleRecording = function() {
     this.recording ? this.recorder.stopRecording() : this.recorder.startRecording();
     this.recording = !this.recording;
-  }
+  };
 
   this.toggleMetronome = function() {
     this.playMetronome ? this.metronome.stop() : this.metronome.start();
@@ -332,5 +344,5 @@ function Synth() {
 
   this.exportProject = function() {
     this.recorder.exportProject();
-  }
+  };
 }

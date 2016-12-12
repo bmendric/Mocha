@@ -45,39 +45,54 @@
 
           <canvas id="trackCanvas" class="mocha-canvas" width="862px" height="267px"></canvas>
 
-          <button id="toggle-synth" onClick="synthesizer.toggle()" class="btn btn-mocha btn-centerThree">Toggle Synth</button>
-          <button id="toggle-recording" onClick="synthesizer.toggleRecordingCallback()" class="btn btn-mocha btn-centerThree">Toggle Recording</button>
+          <button id="toggle-synth" onClick="synthesizer.toggle()" class="btn btn-mocha btn-centerThree" disabled>Toggle Synth</button>
+          <button id="toggle-recording" onClick="synthesizer.toggleRecordingCallback()" class="btn btn-mocha btn-centerThree" disabled>Toggle Recording</button>
           <button onClick="synthesizer.playback()" class="btn btn-mocha btn-centerThree">Playback Recording</button>
 
           <canvas id="waveformCanvas" class="mocha-canvas" width="862px" height="100px"></canvas>
 
+          <button onclick="synthesizer.toggleMetronome()" class="btn btn-mocha btn-mocha-bottom" data-toggle="button">Toggle Metronome</button>
+          <!--
           <label class="bpm-timer-label">Metronome:</label>
+          -->
           <span class="number-field">
             <i id="bpm-minus" class="fa fa-minus plus-minus"></i>
-            <input type="number" class="bpm-timer-input" value="60" min="20" max="300" id="bpm-value"/>
+            <input readonly type="number" class="bpm-timer-input" value="60" min="20" max="300" id="bpm-value"/>
             <i id="bpm-plus" class="fa fa-plus plus-minus"></i>
           </span>
+          <!--
           <label class="switch">
             <input id="metronome-checkbox" class="toggle-switch-checkbox" disabled="disabled" type="checkbox">
             <div class="slider round" onclick="synthesizer.toggleMetronome()"></div>
           </label>
-          <!-- <button onclick="synthesizer.toggleMetronome()" class="btn btn-mocha btn-mocha-bottom" data-toggle="button">Toggle Metronome</button> -->
+          -->
+
 
           <br>
 
-          <label class="bpm-timer-label">Lead-In Time: </label>
+          <!--
+          <label class="btn btn-mocha btn-mocha-bottom" title="Time before synth starts being recorded after recording toggled." data-toggle="button">
+            <input id="timer-on" type="checkbox">Toggle Lead-In Timer <comment type checkbox comment>
+          </label>
+          -->
+
+          <button onclick="synthesizer.toggleTimer()" class="btn btn-mocha btn-mocha-bottom" title="Time before synth starts being recorded after recording is toggled." data-toggle="button">Toggle Count-In Timer</button>
+          <!--
+          <label class="bpm-timer-label" title="Time before synth starts being recorded after recording is toggled.">Lead-In Time: </label>
+          -->
           <span class="number-field">
             <i id="timer-minus" class="fa fa-minus plus-minus"></i>
-            <input type="number" class="bpm-timer-input" value="10" id="timer-value" min="0" max="20" style="color: black"/>
+            <input readonly type="number" class="bpm-timer-input" value="10" id="timer-value" min="0" max="20" style="color: black"/>
             <i id="timer-plus" class="fa fa-plus plus-minus"></i>
           </span>
+          <input id="timer-on" type="checkbox" disabled="disabled" style="display:none" autocomplete="off">
+          <!--
           <label class="switch">
             <input id="timer-on" class="toggle-switch-checkbox" disabled="disabled" type="checkbox">
             <div class="slider round" onclick="synthesizer.toggleTimer()"></div>
           </label>
-          <!-- <input type="checkbox" id="timer-on" style="display:none" /> -->
-
-          <br>
+           <input type="checkbox" id="timer-on" style="display:none" />
+          -->
           <br>
 
           <center>
@@ -101,7 +116,9 @@
 
           <br>
 
-          <button id="toggle-distortion" onClick="synthesizer.toggleDistortion()" class="btn btn-mocha btn-mocha-right">Distortion</button>
+          <button id="toggle-distortion" onClick="synthesizer.toggleDistortion()" class="btn btn-mocha btn-mocha-right" title="Changes sound type to a distorted wave. Note: synthesizer must be disabled to toggle.">
+              Distortion
+          </button>
 
           <br>
           <br>
